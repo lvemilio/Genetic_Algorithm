@@ -22,7 +22,7 @@ object GeneticAlgorithm {
    */
   def geneticAlgorithm[T](incubator: List[Double] => T, costFunction: T => Double, numberOfGenes: Int): T = {
     val ANIMALS: Int = 100
-    val GENERATIONS: Int = 1000000
+    val GENERATIONS: Int = 1500000
     val BEST_ANIMALS: Int = 3
 
     val r = Random
@@ -30,7 +30,14 @@ object GeneticAlgorithm {
 
 
     for (i <- 1 to ANIMALS) {
-      val genes: ListBuffer[Double] = ListBuffer.fill(numberOfGenes)(r.nextFloat() * 1000)
+      var alleles:Float = 0
+      if(r.nextFloat()>=0.5){
+        alleles = r.nextFloat()*1000
+      }
+      else{
+        alleles = -r.nextFloat()*1000
+      }
+      val genes: ListBuffer[Double] = ListBuffer.fill(numberOfGenes)(alleles)
       val newAnimal: T = incubator(genes.toList)
       val newAnimalCost: Double = costFunction(newAnimal)
       breakable {
@@ -137,42 +144,70 @@ object GeneticAlgorithm {
       else {
         if (finalAnimalCost == Double.PositiveInfinity){
           if(r.nextFloat() >= 0.5) {
-            newGenes += r.nextFloat()
+            newGenes += -r.nextFloat()
           }
           else if(r.nextFloat() >= 0.5) {
-            newGenes += r.nextFloat()*100
+            newGenes += r.nextFloat()*1000
+          }
+          else if(r.nextFloat() >= 0.5){
+            newGenes += r.nextFloat()
           }
           else{
-            newGenes += r.nextFloat()*1000
+            newGenes += -r.nextFloat()*1000
           }
         }
         else if (finalAnimalCost <= 10 && finalAnimalCost >= 5) {
           if (r.nextFloat() <= 0.5) {
-            newGenes += allele - r.nextFloat()
+            if (r.nextFloat() <= 0.5) {
+              newGenes += allele - r.nextFloat() / 100
+            }
+            else {
+              newGenes += allele + r.nextFloat() / 100
+            }
+          }
+          else if(r.nextFloat()<=0.5){
+            if (r.nextFloat() <= 0.5) {
+              newGenes += allele - r.nextFloat()*10
+            }
+            else {
+              newGenes += allele + r.nextFloat()*10
+            }
           }
           else {
-            newGenes += allele + r.nextFloat()
+            if (r.nextFloat() <= 0.5) {
+              newGenes += allele - r.nextFloat()*1000
+            }
+            else {
+              newGenes += allele + r.nextFloat()*1000
+            }
           }
         }
 
         else if (finalAnimalCost < 5 && finalAnimalCost >= 1) {
-         if(r.nextFloat() <= 0.5) {
           if (r.nextFloat() <= 0.5) {
-            newGenes += allele - (r.nextFloat() / 10)
+            if (r.nextFloat() <= 0.5) {
+              newGenes += allele - r.nextFloat() / 100
+            }
+            else {
+              newGenes += allele + r.nextFloat() / 100
+            }
+          }
+          else if(r.nextFloat()<=0.5){
+            if (r.nextFloat() <= 0.5) {
+              newGenes += allele - r.nextFloat()*10
+            }
+            else {
+              newGenes += allele + r.nextFloat()*10
+            }
           }
           else {
-            newGenes += allele + (r.nextFloat() / 10)
+            if (r.nextFloat() <= 0.5) {
+              newGenes += allele - r.nextFloat()*1000
+            }
+            else {
+              newGenes += allele + r.nextFloat()*1000
+            }
           }
-         }
-
-          else{
-           if (r.nextFloat() <= 0.5) {
-             newGenes += allele - r.nextFloat() *10
-           }
-           else {
-             newGenes += allele + r.nextFloat() *10
-           }
-         }
         }
 
         else if (finalAnimalCost < 1 && finalAnimalCost >= 0.05) {
@@ -184,12 +219,20 @@ object GeneticAlgorithm {
               newGenes += allele + r.nextFloat() / 100
             }
           }
-          else{
+          else if(r.nextFloat()<=0.5){
             if (r.nextFloat() <= 0.5) {
               newGenes += allele - r.nextFloat()*10
             }
             else {
               newGenes += allele + r.nextFloat()*10
+            }
+          }
+          else {
+            if (r.nextFloat() <= 0.5) {
+              newGenes += allele - r.nextFloat()*1000
+            }
+            else {
+              newGenes += allele + r.nextFloat()*1000
             }
           }
         }
